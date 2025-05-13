@@ -34,29 +34,55 @@ def is_eulerian(mat):
     return True
 
 
-def eulerian_cycle(matrix):
 
+def eulerian_cycle(matrix):
+    
     if not is_eulerian(matrix):
         return None
-
     N = len(matrix)
-    path = []
+    
+    
+    def count_reachable(mat, u):
+        seen = set()
+        def dfs_count(x):
+            for y in range(N):
+                if mat[x][y] > 0 and y not in seen:
+                    seen.add(y)
+                    dfs_count(y)
+        seen.add(u)
+        dfs_count(u)
+        return len(seen)
 
-    def dfs_euler(u):
-        for v in range(N):
-            while matrix[u][v] > 0:
-                matrix[u][v] -= 1
-                matrix[v][u] -= 1
-                dfs_euler(v)
-        path.append(u)
 
-    start = 0
+    u = 0
     for i in range(N):
         if sum(matrix[i]) > 0:
-            start = i
+            u = i
             break
+    path = [u]
+    
+    total_edges = sum(sum(row) for row in matrix) // 2
 
-    dfs_euler(start)
+    for _ in range(total_edges):
+        for v in range(N):
+            if matrix[u][v] > 0:
+                
+                matrix[u][v] -= 1
+                matrix[v][u] -= 1
+                
+                reachable_after = count_reachable(matrix, u)
+                
+                matrix[u][v] += 1
+                matrix[v][u] += 1
+                
+                if reachable_after == count_reachable(matrix, u) or sum(matrix[u]) == 1:
+                    
+                    matrix[u][v] -= 1
+                    matrix[v][u] -= 1
+                    u = v
+                    path.append(u)
+                    break
+                    
     return [x + 1 for x in path]
 
 
