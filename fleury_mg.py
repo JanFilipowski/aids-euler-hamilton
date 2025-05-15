@@ -2,6 +2,14 @@ import sys
 import copy
 sys.setrecursionlimit(10**6)
 
+
+
+def print2d(m):
+    for i in m:
+        for j in i:
+            print(j, end="\t")
+        print()
+
 def czy_euler(macierz):
      
     n=len(macierz[0])-4
@@ -47,6 +55,8 @@ def czy_most(u, v, macierz):
     macierz[u-1][v-1] = temp
     macierz[v-1][u-1] = temp2
 
+    print("Tempy: ", temp, temp2, macierz[u-1][v-1])
+
     if visited_after != visited_before : return True
     return False
 
@@ -54,15 +64,18 @@ def euler_macierz_grafu(wierzcholek):
     global macierz,cykl
     n=len(macierz[0])-4
     most=0
-    #for i in range(len(macierz[0])-4):
-        #print(macierz[i])
-    #print("wierzcholek : ",wierzcholek)
-    #print(cykl)
+    for i in range(len(macierz[0])-4):
+        print(macierz[i])
+    print("wierzcholek : ",wierzcholek)
+    print(cykl)
     cykl.append(wierzcholek)
     for i in range(n):
            if (macierz[wierzcholek-1][i] > 0 and macierz[wierzcholek - 1][i]<=n) or macierz[wierzcholek - 1][i]>2*n:
-                 if czy_most(wierzcholek,i+1,copy.deepcopy(macierz)):
+                 print2d(macierz)
+                 if czy_most(wierzcholek,i+1,macierz):
+                      print2d(macierz)
                       most = i+1
+                      print("most = ",most)
                       continue
                  macierz[wierzcholek-1][i] =0
                  return euler_macierz_grafu(i+1)
